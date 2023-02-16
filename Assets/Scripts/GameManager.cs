@@ -159,7 +159,7 @@ public class GameManager : MonoBehaviour
 
     private void SpawnTree()
     {
-        if (foods != null)
+        if (trees != null)
         {
             int treeIndex = Random.Range(0, trees.Count);
             int selectedSide = side[Random.Range(0, 2)];
