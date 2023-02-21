@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] List<GameObject> cars;
     [SerializeField] List<GameObject> foods;
     [SerializeField] List<GameObject> trees;
+    [SerializeField] List<GameObject> buildings;
     [SerializeField] TMPro.TextMeshProUGUI scoreText;
     [SerializeField] GameObject gameOverPanel;
     [SerializeField] GameObject openingPanel;
@@ -23,9 +24,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject ratel;
     private List<int> roadway = new List<int> { -5, 5};
     private List<int> side = new List<int> { -1, 1 };
+    private List<int> buildingSide = new List<int> { -14, 25 };
     public List<GameObject> carList;
     public List<GameObject> foodList;
     public List<GameObject> treeList;
+    public List<GameObject> buildingList;
 
     void Awake()
     {
@@ -75,7 +78,7 @@ public class GameManager : MonoBehaviour
     {
         while (!gameOver)
         {
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(Random.Range(2, 4));
             playing = true;
             SpawnCar();
             int selectedRoad;
@@ -96,6 +99,7 @@ public class GameManager : MonoBehaviour
             for (int i = 0; i < Random.Range(3,5); i++)
             {
                 SpawnTree();
+                SpawnBuildings();
             }
         }
     }
@@ -108,22 +112,25 @@ public class GameManager : MonoBehaviour
     private void GameOver()
     {
         gameSpeed = 0;
-        foreach (GameObject car in carList)
-        {
-            car.GetComponent<Rigidbody>().drag = 1000;
-        }
-        foreach (GameObject food in foodList)
-        {
-            food.GetComponent<Rigidbody>().drag = 1000;
-        }
-        foreach (GameObject tree in treeList)
-        {
-            tree.GetComponent<Rigidbody>().drag = 1000;
-        }
+        stopObject(carList);
+        stopObject(foodList);
+        stopObject(treeList);
+        stopObject(buildingList);
+
         StopCoroutine(SpawnObjects());
         gameOverPanel.SetActive(true);
     }
 
+    private void stopObject(List<GameObject> list)
+    {
+        foreach (GameObject obj in list)
+        {
+            if (obj != null)
+            {
+                obj.GetComponent<Rigidbody>().drag = 1000;
+            }
+        }
+    }
     private void SpawnCar()
     {
         if (cars != null)
@@ -159,7 +166,7 @@ public class GameManager : MonoBehaviour
 
     private void SpawnTree()
     {
-        if (foods != null)
+        if (trees != null)
         {
             int treeIndex = Random.Range(0, trees.Count);
             int selectedSide = side[Random.Range(0, 2)];
@@ -173,6 +180,24 @@ public class GameManager : MonoBehaviour
             treeHolder.GetComponent<Rigidbody>().AddForce(Vector3.back * gameSpeed * 500 * Time.deltaTime, ForceMode.VelocityChange);
         }
     }
+
+    private void SpawnBuildings()
+    {
+        if (buildings != null)
+        {
+            int buildingIndex = Random.Range(0, buildings.Count);
+            int selectedSide = buildingSide[Random.Range(0, 2)];
+            Vector3 buildingPosition = new Vector3(selectedSide, 1.375f, 485);
+            GameObject buildingHolder = Instantiate(buildings[buildingIndex], buildingPosition, buildings[buildingIndex].transform.rotation);
+            if (buildingList != null)
+            {
+                buildingList.Add(buildingHolder);
+            }
+            buildingHolder.GetComponent<Rigidbody>().drag = 0;
+            buildingHolder.GetComponent<Rigidbody>().AddForce(Vector3.back * gameSpeed * 500 * Time.deltaTime, ForceMode.VelocityChange);
+        }
+    }
+
 
     private IEnumerator MoveRoad()
     {

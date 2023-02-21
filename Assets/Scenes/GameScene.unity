@@ -226,6 +226,13 @@ MonoBehaviour:
   - {fileID: 1301814490440934, guid: 631dcab7c4e7c22418d6f6fa3dd74c7d, type: 3}
   - {fileID: 1820073310235746, guid: 9b77d12e48b7f364a82333485eca4473, type: 3}
   - {fileID: 1226896354247008, guid: f1ac1674b1044b940a5e6f1e32750350, type: 3}
+  buildings:
+  - {fileID: 8796459372343918236, guid: d0074d13d8062b3468784eb91825e9df, type: 3}
+  - {fileID: 8498876556978975907, guid: b7304a9fda59bed41a5b2485f552441f, type: 3}
+  - {fileID: 3826997312260354104, guid: eb1e97ee577a98140b5e85e8aaa1aad6, type: 3}
+  - {fileID: 8066365530567527343, guid: 4eb7b6c8a3b29564b93b59d3d8fd4440, type: 3}
+  - {fileID: 8384566683672998, guid: 1f9ad3c4a0c5f6c4c82d06023c420471, type: 3}
+  - {fileID: 2749790650734506292, guid: da1b37fd45d294d4c84096de57307de2, type: 3}
   scoreText: {fileID: 1647595100}
   gameOverPanel: {fileID: 843396148}
   openingPanel: {fileID: 1916483282}
@@ -234,6 +241,7 @@ MonoBehaviour:
   carList: []
   foodList: []
   treeList: []
+  buildingList: []
 --- !u!4 &107772991
 Transform:
   m_ObjectHideFlags: 0
