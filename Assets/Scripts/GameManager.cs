@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public int score = 0;
     public bool playing;
     private bool first;
+    private bool check;
     private Vector3 roadPos;
     private int count;
     [SerializeField] List<GameObject> cars;
@@ -24,7 +25,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject ratel;
     private List<int> roadway = new List<int> { -5, 5};
     private List<int> side = new List<int> { -1, 1 };
-    private List<int> buildingSide = new List<int> { -14, 25 };
+    private List<int> buildingSide = new List<int> { -21, 60 };
     public List<GameObject> carList;
     public List<GameObject> foodList;
     public List<GameObject> treeList;
@@ -42,6 +43,7 @@ public class GameManager : MonoBehaviour
         scoreText.enabled = false;
         openingPanel.SetActive(true);
         playing = false;
+        check = true;
         first = true;
     }
 
@@ -49,7 +51,8 @@ public class GameManager : MonoBehaviour
     {
         openingPanel.SetActive(false);
         scoreText.enabled = true;
-        Play();
+        StartCoroutine(SpawnObjects());
+        StartCoroutine(SpawnEnvironments());
     }
 
     void Update()
@@ -60,9 +63,14 @@ public class GameManager : MonoBehaviour
             first = false;
         }
 
-        if (gameOver)
+        if (check && gameOver)
         {
             GameOver();
+            check = false;
+        }
+
+        if (gameOver)
+        {
             if (Input.touchCount >= 1)
             {
                 TryAgain();
@@ -80,7 +88,9 @@ public class GameManager : MonoBehaviour
         {
             yield return new WaitForSeconds(Random.Range(2, 4));
             playing = true;
+
             SpawnCar();
+
             int selectedRoad;
             int lastSelectedRoad = 0;
             for (int i = 0; i < Random.Range(3, 5); i++)
@@ -96,19 +106,23 @@ public class GameManager : MonoBehaviour
                 }
                 SpawnFood(i, selectedRoad);
             }
-            for (int i = 0; i < Random.Range(3,5); i++)
+        }
+    }
+
+    private IEnumerator SpawnEnvironments()
+    {
+        while (!gameOver)
+        {
+            yield return new WaitForSeconds(0.1f);
+
+            SpawnBuildings();
+            for (int i = 0; i < Random.Range(3, 5); i++)
             {
                 SpawnTree();
-                SpawnBuildings();
             }
         }
     }
 
-    private void Play()
-    {
-        StartCoroutine(SpawnObjects());
-
-    }
     private void GameOver()
     {
         gameSpeed = 0;
@@ -117,7 +131,8 @@ public class GameManager : MonoBehaviour
         stopObject(treeList);
         stopObject(buildingList);
 
-        StopCoroutine(SpawnObjects());
+        StopAllCoroutines();
+
         gameOverPanel.SetActive(true);
     }
 
@@ -127,6 +142,8 @@ public class GameManager : MonoBehaviour
         {
             if (obj != null)
             {
+                obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                obj.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
                 obj.GetComponent<Rigidbody>().drag = 1000;
             }
         }
